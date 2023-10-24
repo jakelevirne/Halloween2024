@@ -11,8 +11,12 @@
             "extensions": [
 				"ms-python.python",
 				"ms-azuretools.vscode-docker"
-			]
+			],
+			"settings": {  
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
+			}
 		}
+
 	},
 	// This is only needed when the MQTT broker is running on the host
 	"runArgs": [
