@@ -19,8 +19,8 @@ queues = {
     PROP2: [],
     PROP3: [],
     PROP4: [],
-    PROP5: [],
-    PROP6: [] # CAULDRON AIR PUMP AND SOUND. NO SENSOR
+    PROP5: []
+    # PROP6: [] # CAULDRON AIR PUMP AND SOUND. NO SENSOR
 }
 
 # Define MQTT parameters
@@ -80,7 +80,7 @@ async def process_queue_PROP2():
                 publish_event(f"device/{PROP6}/actuator", "X4") # Run the air pump
                 await asyncio.sleep(90)  # Delay before running the fog machine again
         queues[PROP2] = []  # Clear the list
-        #TODO: keep a count of the number of times the fog machine has been run. Stop after 50.
+       
 
 
 
@@ -137,17 +137,17 @@ async def process_queue_PROP5():
 
 
 # This is the CAULDRON AIR PUMP. SENSOR NOT NEEDED. TODO: REMOVE THIS LOOP
-async def process_queue_PROP6():
-    while True:
-        await asyncio.sleep(0.3)
-        if queues[PROP6]:
-            for message in queues[PROP6]:
-                topic = message.topic
-                payload = message.payload.decode()
-                print(f"PROP6 Processing {PROP6} - Received from queue message: {payload} from topic {topic}")
-                # Custom processing for PROP6
-                await asyncio.sleep(5)
-            queues[PROP6] = []
+#async def process_queue_PROP6():
+#    while True:
+#        await asyncio.sleep(0.3)
+#        if queues[PROP6]:
+#            for message in queues[PROP6]:
+#                topic = message.topic
+#                payload = message.payload.decode()
+#                print(f"PROP6 Processing {PROP6} - Received from queue message: {payload} from topic {topic}")
+#                # Custom processing for PROP6
+#                await asyncio.sleep(5)
+#            queues[PROP6] = []
 
 # Define the event loop
 async def event_loop():
@@ -155,7 +155,7 @@ async def event_loop():
         # All this main loop does is print the current time every .5 seconds
         await asyncio.sleep(0.5)
         current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + f".{int(time.time() * 1000) % 1000:03d}"
-        print(current_time)
+        # print(current_time)
 
 
 # Start the event loop
@@ -168,6 +168,6 @@ if __name__ == "__main__":
     loop.create_task(process_queue_PROP3())
     loop.create_task(process_queue_PROP4())
     loop.create_task(process_queue_PROP5())
-    loop.create_task(process_queue_PROP6())
+    # loop.create_task(process_queue_PROP6())
     client.loop_start()
     loop.run_forever()
