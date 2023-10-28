@@ -50,7 +50,7 @@ async def process_queue_PROP1():
         if queues[PROP1]:
             payloads = [int(message.payload.decode()) for message in queues[PROP1]]  # Extract payloads as integers
             max_payload = max(payloads)  # Find the maximum payload value
-            print(f"Max payload is: {max_payload}")
+            print(f"PROP 1 Max payload is: {max_payload}")
 
             # if max_payload > SENSOR_THRESHOLD:
             if max_payload % 2 == 0: # if max_payload is even
@@ -66,7 +66,7 @@ async def process_queue_PROP2():
         if queues[PROP2]:
             payloads = [int(message.payload.decode()) for message in queues[PROP2]]  # Extract payloads as integers
             max_payload = max(payloads)  # Find the maximum payload value
-            print(f"Max payload is: {max_payload}")
+            print(f"PROP2 Max payload is: {max_payload}")
 
             if max_payload > SENSOR_THRESHOLD:
                 publish_event(f"device/{PROP2}/actuator", "X8")  # Publish event when the maximum threshold is exceeded
@@ -83,18 +83,21 @@ async def process_queue_PROP2():
 
 
 
-
+# WEREWOLF
 async def process_queue_PROP3():
     while True:
         await asyncio.sleep(0.3)
         if queues[PROP3]:
-            for message in queues[PROP3]:
-                topic = message.topic
-                payload = message.payload.decode()
-                print(f"Processing {PROP3} - Received from queue message: {payload} from topic {topic}")
-                # Custom processing for PROP3
-                await asyncio.sleep(4)
-            queues[PROP3] = []
+            payloads = [int(message.payload.decode()) for message in queues[PROP3]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"PROP3 Max payload is: {max_payload}")
+
+            if max_payload > SENSOR_THRESHOLD:
+                publish_event(f"device/{PROP3}/actuator", "X1")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(5)  # Delay after running the werewolf
+        queues[PROP3] = []  # Clear the list
+
+
 
 
 async def process_queue_PROP4():
