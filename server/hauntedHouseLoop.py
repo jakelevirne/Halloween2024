@@ -95,7 +95,7 @@ async def process_queue_PROP3():
 
             if max_payload > SENSOR_THRESHOLD:
                 publish_event(f"device/{PROP3}/actuator", "X1")  # Publish event when the maximum threshold is exceeded
-                await asyncio.sleep(8)  # Delay after running the werewolf
+                await asyncio.sleep(20)  # Delay after running the werewolf
         queues[PROP3] = []  # Clear the list
 
 
