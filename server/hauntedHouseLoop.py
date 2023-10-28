@@ -77,7 +77,7 @@ async def process_queue_PROP2():
                 publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
                 await asyncio.sleep(2)
                 publish_event(f"device/{PROP6}/actuator", "X4") # Run the air pump
-                await asyncio.sleep(120)  # Delay at least 2 minutes before running the fog machine again
+                await asyncio.sleep(90)  # Delay at least 2 minutes before running the fog machine again
         queues[PROP2] = []  # Clear the list
         #TODO: keep a count of the number of times the fog machine has been run. Stop after 50.
 
