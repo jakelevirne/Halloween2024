@@ -4,13 +4,13 @@ import paho.mqtt.client as mqtt
 
 # Constants for device names
 PROP1 = "60:55:F9:7B:5F:2C"
-PROP2 = "60:55:F9:7B:98:14"
+PROP2 = "60:55:F9:7B:98:14" # FOG MACHINE
 PROP3 = "60:55:F9:7B:63:88"
 PROP4 = "60:55:F9:7B:82:30"
 PROP5 = "60:55:F9:7B:60:BC"
-PROP6 = "60:55:F9:7B:7F:98"
+PROP6 = "60:55:F9:7B:7F:98" # CAULDRON AIR PUMP
 
-SENSOR_THRESHOLD = 100
+SENSOR_THRESHOLD = 1000
 
 # Dictionary to store lists for each device
 queues = {
@@ -59,20 +59,29 @@ async def process_queue_PROP1():
         queues[PROP1] = []  # Clear the list
         await asyncio.sleep(4)  # Adjust the delay as needed
         
-
-
-
+# FOG MACHINE AND CAULDRON AIR PUMP
 async def process_queue_PROP2():
     while True:
         await asyncio.sleep(0.3)
         if queues[PROP2]:
-            for message in queues[PROP2]:
-                topic = message.topic
-                payload = message.payload.decode()
-                print(f"Processing {PROP2} - Received from queue message: {payload} from topic {topic}")
-                # Custom processing for PROP2
-                await asyncio.sleep(3)
-            queues[PROP2] = []
+            payloads = [int(message.payload.decode()) for message in queues[PROP2]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"Max payload is: {max_payload}")
+
+            if max_payload > SENSOR_THRESHOLD:
+                publish_event(f"device/{PROP2}/actuator", "X8")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(3)  # Delay after running the fog machine
+                publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
+                await asyncio.sleep(2)
+                publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
+                await asyncio.sleep(2)
+                publish_event(f"device/{PROP6}/actuator", "X6") # Run the air pump
+                await asyncio.sleep(120)  # Delay at least 2 minutes before running the fog machine again
+        queues[PROP2] = []  # Clear the list
+        #TODO: keep a count of the number of times the fog machine has been run. Stop after 50.
+
+
+
 
 
 async def process_queue_PROP3():
