@@ -5,7 +5,7 @@ import paho.mqtt.client as mqtt
 # Constants for device names
 PROP1 = "60:55:F9:7B:5F:2C"
 PROP2 = "60:55:F9:7B:98:14" # FOG MACHINE AND DOOR SENSOR
-PROP3 = "60:55:F9:7B:63:88"
+PROP3 = "60:55:F9:7B:63:88" # WEREWOLF
 PROP4 = "60:55:F9:7B:82:30"
 PROP5 = "60:55:F9:7B:60:BC"
 PROP6 = "60:55:F9:7B:7F:98" # CAULDRON AIR PUMP
