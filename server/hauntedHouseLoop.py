@@ -1,6 +1,7 @@
 import asyncio
 import time
 import paho.mqtt.client as mqtt
+import random
 
 # Constants for device names
 PROP1 = "60:55:F9:7B:5F:2C"
@@ -77,7 +78,7 @@ async def process_queue_PROP2():
                 publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
                 await asyncio.sleep(2)
                 publish_event(f"device/{PROP6}/actuator", "X4") # Run the air pump
-                await asyncio.sleep(90)  # Delay at least 2 minutes before running the fog machine again
+                await asyncio.sleep(90)  # Delay before running the fog machine again
         queues[PROP2] = []  # Clear the list
         #TODO: keep a count of the number of times the fog machine has been run. Stop after 50.
 
@@ -114,19 +115,28 @@ async def process_queue_PROP4():
             queues[PROP4] = []
 
 
+# SCARECROW
 async def process_queue_PROP5():
     while True:
         await asyncio.sleep(0.3)
         if queues[PROP5]:
-            for message in queues[PROP5]:
-                topic = message.topic
-                payload = message.payload.decode()
-                print(f"PROP5 Processing {PROP5} - Received from queue message: {payload} from topic {topic}")
-                # Custom processing for PROP5
-                await asyncio.sleep(5)
-            queues[PROP5] = []
+            payloads = [int(message.payload.decode()) for message in queues[PROP5]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"PROP5 Max payload is: {max_payload}")
+
+            if max_payload > SENSOR_THRESHOLD:
+                #async sleep for a random interval between 0 and 2 seconds
+                sleep_time = random.uniform(0, 2)
+                print(f"Sleeping for {sleep_time:.2f} seconds")
+                await asyncio.sleep(sleep_time)
+                print("Done sleeping")
+
+                publish_event(f"device/{PROP5}/actuator", "X1")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(20)  # Delay after running the scarecrow
+        queues[PROP5] = []  # Clear the list
 
 
+# This is the CAULDRON AIR PUMP. SENSOR NOT NEEDED. TODO: REMOVE THIS LOOP
 async def process_queue_PROP6():
     while True:
         await asyncio.sleep(0.3)
