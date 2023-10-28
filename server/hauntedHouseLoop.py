@@ -12,6 +12,7 @@ PROP5 = "60:55:F9:7B:60:BC" # SCARECROW
 PROP6 = "60:55:F9:7B:7F:98" # CAULDRON AIR PUMP
 
 SENSOR_THRESHOLD = 1000
+fogFlipper = True
 
 # Dictionary to store lists for each device
 queues = {
@@ -62,6 +63,7 @@ async def process_queue_PROP1():
         
 # FOG MACHINE AND CAULDRON AIR PUMP
 async def process_queue_PROP2():
+    global fogFlipper
     while True:
         await asyncio.sleep(0.3)
         if queues[PROP2]:
@@ -70,7 +72,14 @@ async def process_queue_PROP2():
             print(f"PROP2 Max payload is: {max_payload}")
 
             if max_payload > SENSOR_THRESHOLD:
-                publish_event(f"device/{PROP2}/actuator", "X8")  # Run the fog machine
+                if (fogFlipper):
+                    publish_event(f"device/{PROP2}/actuator", "X8")  # Run the fog machine
+                    fogFlipper = False
+                    print("PROP2 Fog machine on")
+                else:
+                    fogFlipper = True
+                    print("PROP2 Fog machine skipped")
+
                 await asyncio.sleep(3)  # Delay after running the fog machine
                 publish_event(f"device/{PROP6}/actuator", "A1") # Run the witch sound
                 publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
