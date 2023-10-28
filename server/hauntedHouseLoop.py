@@ -7,7 +7,7 @@ PROP1 = "60:55:F9:7B:5F:2C"
 PROP2 = "60:55:F9:7B:98:14" # FOG MACHINE AND DOOR SENSOR
 PROP3 = "60:55:F9:7B:63:88" # WEREWOLF
 PROP4 = "60:55:F9:7B:82:30"
-PROP5 = "60:55:F9:7B:60:BC"
+PROP5 = "60:55:F9:7B:60:BC" # SCARECROW
 PROP6 = "60:55:F9:7B:7F:98" # CAULDRON AIR PUMP
 
 SENSOR_THRESHOLD = 1000
@@ -19,7 +19,7 @@ queues = {
     PROP3: [],
     PROP4: [],
     PROP5: [],
-    PROP6: []
+    PROP6: [] # CAULDRON AIR PUMP AND SOUND. NO SENSOR
 }
 
 # Define MQTT parameters
@@ -55,9 +55,9 @@ async def process_queue_PROP1():
             # if max_payload > SENSOR_THRESHOLD:
             if max_payload % 2 == 0: # if max_payload is even
                 publish_event(f"device/{PROP1}/actuator", "X2")  # Publish event when the maximum threshold is exceeded
-
+                await asyncio.sleep(4)  # Adjust the delay as needed
         queues[PROP1] = []  # Clear the list
-        await asyncio.sleep(4)  # Adjust the delay as needed
+        
         
 # FOG MACHINE AND CAULDRON AIR PUMP
 async def process_queue_PROP2():
@@ -69,13 +69,14 @@ async def process_queue_PROP2():
             print(f"PROP2 Max payload is: {max_payload}")
 
             if max_payload > SENSOR_THRESHOLD:
-                publish_event(f"device/{PROP2}/actuator", "X8")  # Publish event when the maximum threshold is exceeded
+                publish_event(f"device/{PROP2}/actuator", "X8")  # Run the fog machine
                 await asyncio.sleep(3)  # Delay after running the fog machine
+                publish_event(f"device/{PROP6}/actuator", "A1") # Run the witch sound
                 publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
                 await asyncio.sleep(2)
                 publish_event(f"device/{PROP6}/actuator", "X1") # Run the air pump
                 await asyncio.sleep(2)
-                publish_event(f"device/{PROP6}/actuator", "X6") # Run the air pump
+                publish_event(f"device/{PROP6}/actuator", "X4") # Run the air pump
                 await asyncio.sleep(120)  # Delay at least 2 minutes before running the fog machine again
         queues[PROP2] = []  # Clear the list
         #TODO: keep a count of the number of times the fog machine has been run. Stop after 50.
@@ -94,7 +95,7 @@ async def process_queue_PROP3():
 
             if max_payload > SENSOR_THRESHOLD:
                 publish_event(f"device/{PROP3}/actuator", "X1")  # Publish event when the maximum threshold is exceeded
-                await asyncio.sleep(5)  # Delay after running the werewolf
+                await asyncio.sleep(8)  # Delay after running the werewolf
         queues[PROP3] = []  # Clear the list
 
 
@@ -107,7 +108,7 @@ async def process_queue_PROP4():
             for message in queues[PROP4]:
                 topic = message.topic
                 payload = message.payload.decode()
-                print(f"Processing {PROP4} - Received from queue message: {payload} from topic {topic}")
+                print(f"PROP4 Processing {PROP4} - Received from queue message: {payload} from topic {topic}")
                 # Custom processing for PROP4
                 await asyncio.sleep(5)
             queues[PROP4] = []
@@ -120,7 +121,7 @@ async def process_queue_PROP5():
             for message in queues[PROP5]:
                 topic = message.topic
                 payload = message.payload.decode()
-                print(f"Processing {PROP5} - Received from queue message: {payload} from topic {topic}")
+                print(f"PROP5 Processing {PROP5} - Received from queue message: {payload} from topic {topic}")
                 # Custom processing for PROP5
                 await asyncio.sleep(5)
             queues[PROP5] = []
@@ -133,7 +134,7 @@ async def process_queue_PROP6():
             for message in queues[PROP6]:
                 topic = message.topic
                 payload = message.payload.decode()
-                print(f"Processing {PROP6} - Received from queue message: {payload} from topic {topic}")
+                print(f"PROP6 Processing {PROP6} - Received from queue message: {payload} from topic {topic}")
                 # Custom processing for PROP6
                 await asyncio.sleep(5)
             queues[PROP6] = []
