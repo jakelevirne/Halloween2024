@@ -1,1 +1,10 @@
 # Halloween2024
+
+This year was a complete rewrite of the haunted house, using an MQTT-based messaging architecture. The key components are:
+- Common firmware on all of the controllers (ESP32-C3s) that
+  - output messages for their connected sensors, mainly PIR proximity sensors
+  - respond to commands for activating props through various actuators (relays, pneumatic solenoid valves, audio players)
+- A centralized server that acts as a mediator between all the various props and sensors
+  - subscribe to sensor messages from all the components
+  - orchestrate a scene in response to a given sensor input
+    - combine actuation commands and timing sequences to achieve maximum scare!
