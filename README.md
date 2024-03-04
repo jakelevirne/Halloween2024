@@ -8,3 +8,5 @@ This year was a complete rewrite of the haunted house, using an MQTT-based messa
   - subscribe to sensor messages from all the components
   - orchestrate a scene in response to a given sensor input
     - combine actuation commands and timing sequences to achieve maximum scare!
+
+https://drive.google.com/file/d/1zwmoVLYiJhM9uvdrN-SONa0KXk6m6njB/preview
