@@ -9,4 +9,5 @@ This year was a complete rewrite of the haunted house, using an MQTT-based messa
   - orchestrate a scene in response to a given sensor input
     - combine actuation commands and timing sequences to achieve maximum scare!
 
-https://drive.google.com/file/d/1zwmoVLYiJhM9uvdrN-SONa0KXk6m6njB/preview
+[<img width="569" alt="HalloweenHauntedHouse2024Preview" src="https://github.com/jakelevirne/Halloween2024/assets/51732/c691ddff-7fa9-4cad-8407-8cfbed17d607">](https://drive.google.com/file/d/1zwmoVLYiJhM9uvdrN-SONa0KXk6m6njB/preview)
+
