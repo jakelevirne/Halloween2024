@@ -1,4 +1,4 @@
-# Halloween2024
+# Halloween2023
 
 This year was a complete rewrite of the haunted house, using an MQTT-based messaging architecture. The key components are:
 - Common firmware on all of the controllers (ESP32-C3s) that
