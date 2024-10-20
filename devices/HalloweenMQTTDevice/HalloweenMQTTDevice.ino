@@ -4,6 +4,8 @@ For logging to an attached LCD, use aSerial TFT LCD Module Display Screen (Drive
 Wiring of LCD to ESP32-C3 requires 8 connections: VCC, GND, TFT_CS, TFT_RESET, TFT_DC, TFT_MOSI, TFT_SCK, TFT_LED, TFT_MISO
 These map naturally to the SPI pins of the ESP32 board, with the RESET and LED pins mapping wherever is conventient. All mappings #defined in constants.
 
+For these boards, in Arduino IDE, Tools->Board should be set to "ESP32C3 Dev Module", Tools->Flash Mode should be set to DIO, Tools->USB CDC on Boot should be Enabled
+
 The core functionality is that the device will connect to an MQTT server, based on the connection secrets SECRET_SSID, SECRET_PASS, MQTT_BROKER_IP defined in secrets.h
 It will subscribe to topics of the form device/<MAC ADDRESS>/actuator (e.g. device/60:55:F9:7B:5F:2C/actuator) and it will listen for messages A<#>, B<#>, X<#>, Y<#> (e.g. A5)
 Where A and B messages will interact with A_PIN and B_PIN, which are normally set HIGH but which will go LOW for <#> cycles when receiving an A<#> or B<#> actuator message
@@ -12,6 +14,7 @@ Cycles are defined by the constant TIMER0_INTERVAL_MS, which is used by the ESP3
 
 It will also publish to the topic device/<MAC ADDRESS>/sensor (e.g. device/60:55:F9:7B:5F:2C/actuator) once every TIMER0_INTERVAL_MS with the current value of pin A0
 This is useful for connecting a sensor, such as an IR sensor, to the board
+
 
 Define SECRET_SSID, SECRET_PASS, MQTT_BROKER_IP in a separate secrets.h that gets included
 */

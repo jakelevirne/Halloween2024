@@ -1,3 +1,10 @@
+# Setup steps:
+# python3 -m venv myenv
+# source myenv/bin/activate
+# pip install -r requirements.txt
+# python3 hauntedHouseLoop.py
+
+
 import asyncio
 import time
 import paho.mqtt.client as mqtt
