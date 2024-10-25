@@ -2,7 +2,7 @@
 // This code controls the Halloween coffin.
 // It listens for a trigger from a controller and bangs/opens the coffin door when triggered.
 // The coffin door then closes after a delay.
-// This is meant to run on an Arduino Uno.
+// This is meant to run on an Arduino Uno with a relay set to LOW trigger
 
 
 const int triggerPin = 3;     // the number of the blue pushbutton pin
@@ -11,8 +11,9 @@ const int doorPin =  7;      // the number of the coffin door relay in pin
 void setup() {
   // initialize the door pin as an output
   pinMode(doorPin, OUTPUT);
-  // initialize the door pin as an input
+  // initialize the trigger pin as an input
   pinMode(triggerPin, INPUT);
+  pinMode(triggerPin, INPUT_PULLUP);
   
   Serial.begin(9600);               // starts the serial monitor
   delay(3000);
@@ -20,7 +21,7 @@ void setup() {
 
 void loop() {
   // Only run when triggerPin is HIGH
-  if (digitalRead(triggerPin) == HIGH) {
+  if (digitalRead(triggerPin) == LOW) {
     Serial.println("BOO");
 
     digitalWrite(doorPin, HIGH);
