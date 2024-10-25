@@ -1,3 +1,10 @@
+// HalloweenCoffin.ino
+// This code controls the Halloween coffin.
+// It listens for a trigger from a controller and bangs/opens the coffin door when triggered.
+// The coffin door then closes after a delay.
+// This is meant to run on an Arduino Uno.
+
+
 const int triggerPin = 3;     // the number of the blue pushbutton pin
 const int doorPin =  7;      // the number of the coffin door relay in pin
 
