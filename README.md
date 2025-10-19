@@ -1,6 +1,6 @@
-# Halloween2023
+# Halloween2024
 
-This year was a complete rewrite of the haunted house, using an MQTT-based messaging architecture. The key components are:
+This was year 2 of the MQTT-based messaging architecture. The key components are:
 - Common firmware on all of the controllers (ESP32-C3s) that
   - output messages for their connected sensors, mainly PIR proximity sensors
   - respond to commands for activating props through various actuators (relays, pneumatic solenoid valves, audio players)

@@ -57,6 +57,7 @@ void loop() {
     digitalWrite(doorPin, HIGH);
     delay(7000);
     digitalWrite(doorPin, LOW);
+    delay(1000);
     
   }
 }

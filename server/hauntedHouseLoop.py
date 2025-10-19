@@ -11,12 +11,12 @@ import paho.mqtt.client as mqtt
 import random
 
 # Constants for device names
-PROP1 = "60:55:F9:7B:5F:2C"
-PROP2 = "60:55:F9:7B:98:14" # FOG MACHINE AND DOOR SENSOR
+PROP1 = "60:55:F9:7B:5F:2C" # PHONE HALL SENSOR
+PROP2 = "60:55:F9:7B:98:14" # COFFIN
 PROP3 = "60:55:F9:7B:63:88" # WEREWOLF
-PROP4 = "60:55:F9:7B:82:30"
+PROP4 = "60:55:F9:7B:82:30" # COFFIN HALL SENSOR
 PROP5 = "60:55:F9:7B:60:BC" # SCARECROW
-PROP6 = "60:55:F9:7B:7F:98" # CAULDRON AIR PUMP
+PROP6 = "60:55:F9:7B:7F:98" # PHONE  
 
 SENSOR_THRESHOLD = 1000
 fogFlipper = True
@@ -27,8 +27,8 @@ queues = {
     PROP2: [],
     PROP3: [],
     PROP4: [],
-    PROP5: []
-    # PROP6: [] # CAULDRON AIR PUMP AND SOUND. NO SENSOR
+    PROP5: [],
+    PROP6: []
 }
 
 # Define MQTT parameters
@@ -52,6 +52,7 @@ for device_id in queues:
     client.subscribe(f"device/{device_id}/sensor")  # Updated topic for subscription
 client.on_message = on_message
 
+""" 
 
 async def process_queue_PROP1():
     while True:
@@ -67,7 +68,7 @@ async def process_queue_PROP1():
                 await asyncio.sleep(4)  # Adjust the delay as needed
         queues[PROP1] = []  # Clear the list
         
-        
+  
 # FOG MACHINE AND CAULDRON AIR PUMP
 async def process_queue_PROP2():
     global fogFlipper
@@ -98,8 +99,24 @@ async def process_queue_PROP2():
         queues[PROP2] = []  # Clear the list
        
 
+"""
 
+# PHONE HALL SENSOR
+async def process_queue_PROP1():
+    while True:
+        await asyncio.sleep(0.3)
+        if queues[PROP1]:
+            payloads = [int(message.payload.decode()) for message in queues[PROP1]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"PROP1 Max payload is: {max_payload}")
 
+            if max_payload > SENSOR_THRESHOLD:
+                publish_event(f"device/{PROP6}/actuator", "A11")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(4)  # Delay after running 
+                publish_event(f"device/{PROP6}/actuator", "B8")  # Publish event when the maximum threshold is exceeded
+
+                await asyncio.sleep(30)  # Delay after running 
+        queues[PROP1] = []  # Clear the list
 
 # WEREWOLF
 async def process_queue_PROP3():
@@ -111,12 +128,40 @@ async def process_queue_PROP3():
             print(f"PROP3 Max payload is: {max_payload}")
 
             if max_payload > SENSOR_THRESHOLD:
-                publish_event(f"device/{PROP3}/actuator", "X1")  # Publish event when the maximum threshold is exceeded
+                publish_event(f"device/{PROP3}/actuator", "X30")  # Publish event when the maximum threshold is exceeded
                 await asyncio.sleep(20)  # Delay after running the werewolf
         queues[PROP3] = []  # Clear the list
 
+# COFFIN HALL SENSOR
+async def process_queue_PROP4():
+    while True:
+        await asyncio.sleep(0.3)
+        if queues[PROP4]:
+            payloads = [int(message.payload.decode()) for message in queues[PROP4]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"PROP4 Max payload is: {max_payload}")
+
+            if max_payload > SENSOR_THRESHOLD:
+                publish_event(f"device/{PROP2}/actuator", "X20")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(60)  # Delay after running 
+        queues[PROP4] = []  # Clear the list
+
+# PHONE
+async def process_queue_PROP6():
+    while True:
+        await asyncio.sleep(0.3)
+        if queues[PROP6]:
+            payloads = [int(message.payload.decode()) for message in queues[PROP6]]  # Extract payloads as integers
+            max_payload = max(payloads)  # Find the maximum payload value
+            print(f"PROP6 Max payload is: {max_payload}")
+
+            if max_payload > SENSOR_THRESHOLD:
+                publish_event(f"device/{PROP6}/actuator", "B8")  # Publish event when the maximum threshold is exceeded
+                await asyncio.sleep(20)  # Delay after running the werewolf
+        queues[PROP6] = []  # Clear the list
 
 
+"""
 
 async def process_queue_PROP4():
     while True:
@@ -151,19 +196,7 @@ async def process_queue_PROP5():
                 await asyncio.sleep(20)  # Delay after running the scarecrow
         queues[PROP5] = []  # Clear the list
 
-
-# This is the CAULDRON AIR PUMP. SENSOR NOT NEEDED. TODO: REMOVE THIS LOOP
-#async def process_queue_PROP6():
-#    while True:
-#        await asyncio.sleep(0.3)
-#        if queues[PROP6]:
-#            for message in queues[PROP6]:
-#                topic = message.topic
-#                payload = message.payload.decode()
-#                print(f"PROP6 Processing {PROP6} - Received from queue message: {payload} from topic {topic}")
-#                # Custom processing for PROP6
-#                await asyncio.sleep(5)
-#            queues[PROP6] = []
+"""
 
 # Define the event loop
 async def event_loop():
@@ -180,10 +213,10 @@ if __name__ == "__main__":
     asyncio.set_event_loop(loop)
     loop.create_task(event_loop())
     loop.create_task(process_queue_PROP1())
-    loop.create_task(process_queue_PROP2())
+    # loop.create_task(process_queue_PROP2())
     loop.create_task(process_queue_PROP3())
     loop.create_task(process_queue_PROP4())
-    loop.create_task(process_queue_PROP5())
+    # loop.create_task(process_queue_PROP5())
     # loop.create_task(process_queue_PROP6())
     client.loop_start()
     loop.run_forever()
